@@ -506,7 +506,7 @@ namespace Tetris2
                         try
                         {
                             if ((string)gameBoard[pos[0] + (i - 1), pos[1]].Tag != "MOVING" && (string)gameBoard[pos[0] + (i - 1), pos[1]].Tag != "STILL"
-                                 && (string)gameBoard[pos[0], pos[1]].Tag != "ROTATION")
+                                 && (string)gameBoard[pos[0] + (i - 1), pos[1]].Tag != "ROTATION")
                             {
                                 gameBoard[pos[0] + (i - 1), pos[1]].Background = new SolidColorBrush(c);
                                 ActualPredictionPos.Add(new int[2] { pos[0] + (i - 1), pos[1] });

@@ -37,7 +37,10 @@
                 
 
             </Grid>
-            
+
+            <Label Grid.Column="0" Content="Si vous jouez avec les touches du clavier," VerticalAlignment="Bottom" Foreground="White" FontSize="15" Margin="0,0,0,15"/>
+            <Label Grid.Column="0" Content="enlever la souris de la grille" VerticalAlignment="Bottom" Foreground="White" FontSize="15"/>
+
             <Grid Grid.Column="2">
                 <Border Margin="50,100,50,0" BorderThickness="1,1,1,1" CornerRadius="25,25,25,25" Background="White" VerticalAlignment="Top" Height="205">
                     <Label x:Name="label_Score" Content="000"  Background="Black" BorderBrush="White" BorderThickness="5,5,5,5" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="150" Margin="0,20,0,0"/>
