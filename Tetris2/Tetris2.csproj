@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="2560px-Tetris_I.svg.png" />
+    <None Remove="2560px-Tetris_S.svg.png" />
+    <None Remove="2560px-Tetris_T.svg.png" />
+    <None Remove="88395447.jpg" />
+    <None Remove="background.jpg" />
+    <None Remove="bouton_play.png" />
+    <None Remove="button_play.png" />
+    <None Remove="button_play_mouseOver.png" />
+    <None Remove="score.png" />
+    <None Remove="Tetris_J.svg.png" />
+    <None Remove="Tetris_L.svg %281%29.png" />
+    <None Remove="Tetris_O.svg %281%29.png" />
+    <None Remove="Tetris_Z.svg.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Utilities\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="resources\88395447.jpg" />
+    <Resource Include="resources\2560px-Tetris_I.svg.png" />
+    <Resource Include="resources\2560px-Tetris_S.svg.png" />
+    <Resource Include="resources\2560px-Tetris_T.svg.png" />
+    <Resource Include="resources\button_play_mouseOver.png" />
+    <Resource Include="resources\button_play.png" />
+    <Resource Include="resources\background.jpg" />
+    <Resource Include="resources\score.png" />
+    <Resource Include="resources\Tetris_J.svg.png" />
+    <Resource Include="resources\Tetris_L.svg %281%29.png" />
+    <Resource Include="resources\Tetris_O.svg %281%29.png" />
+    <Resource Include="resources\Tetris_Z.svg.png" />
+  </ItemGroup>
+
+</Project>

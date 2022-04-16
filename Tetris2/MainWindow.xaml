@@ -1,0 +1,99 @@
+﻿<Window x:Class="Tetris2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tetris2"
+        mc:Ignorable="d"
+        
+        Title="MainWindow"  ContentRendered="Window_ContentRendered" WindowStartupLocation="CenterScreen" WindowState="Maximized" MinWidth="1280" MinHeight="680" ResizeMode="CanResize" SizeToContent="Manual" KeyDown="Window_KeyDown">
+    <Window.Background>
+        <ImageBrush ImageSource="resources/background.jpg"/>
+    </Window.Background>
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+
+                <Border Margin="50,100,50,0" BorderThickness="1,1,1,1" CornerRadius="25,25,25,25" Background="#FF1D2331" VerticalAlignment="Top" Height="205">
+                    <Grid x:Name="Grid_NextPieces">
+                        <Image  Visibility="Collapsed"  x:Name="img_nextPiece_I" Margin="20,20,20,20" Source="resources/2560px-Tetris_I.svg.png"/>
+                        <Image Visibility="Collapsed" x:Name="img_nextPiece_O" Margin="20,20,20,20" Source="resources/Tetris_O.svg (1).png"/>
+                        <Image Visibility="Collapsed" x:Name="img_nextPiece_T"  Margin="20,20,20,20" Source="resources/2560px-Tetris_T.svg.png"/>
+                        <Image  Visibility="Collapsed" x:Name="img_nextPiece_L" Margin="20,20,20,20" Source="resources/Tetris_L.svg (1).png"/>
+                        <Image Visibility="Collapsed" x:Name="img_nextPiece_J" Margin="20,20,20,20" Source="resources/Tetris_J.svg.png"/>
+                        <Image Visibility="Collapsed" x:Name="img_nextPiece_Z" Margin="20,20,20,20" Source="resources/Tetris_Z.svg.png"/>
+                        <Image Visibility="Collapsed" x:Name="img_nextPiece_S" Margin="20,20,20,20" Source="resources/2560px-Tetris_S.svg.png"/>
+                        
+                    </Grid>
+                </Border>
+                <Image Source="resources/88395447.jpg" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,60,0,0" Width="250" />
+
+
+            </Grid>
+            
+            <Grid Grid.Column="2">
+                <Border Margin="50,100,50,0" BorderThickness="1,1,1,1" CornerRadius="25,25,25,25" Background="White" VerticalAlignment="Top" Height="205">
+                    <Label Content="00"  Background="Black" BorderBrush="White" BorderThickness="5,5,5,5" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="150" Margin="0,20,0,0"/>
+                </Border>
+                <Image Source="resources/score.png" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,50,0,0" Width="250" />
+
+                <Border x:Name="button_play" Cursor="Hand" VerticalAlignment="Bottom" Margin="100,0,100,25" Height="205" CornerRadius="15,15,15,15" >
+                    <Grid>
+                        <Image x:Name="buttonPlay_img" Visibility="Visible" Source="resources/button_play.png"   />
+                        <Image x:Name="buttonPlay_img_mouseover" Visibility="Hidden" Source="resources/button_play_mouseOver.png" MouseDown="ButtonStart_MouseDown"   />
+                    </Grid>
+                </Border>
+
+            </Grid>
+
+            <Border x:Name="Border_GameBoard" VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,25,0,0" Grid.Column="1" BorderBrush="#FF560606" BorderThickness="0,0,0,0">
+                <Grid x:Name="GameBoard" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <!-- Grid Contents -->
+                </Grid>
+
+            </Border>
+            
+        </Grid>
+    </Grid>
+</Window>
