@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Tetris2"
         mc:Ignorable="d"
         
-        Title="MainWindow"  ContentRendered="Window_ContentRendered" WindowStartupLocation="CenterScreen" WindowState="Maximized" MinWidth="1280" MinHeight="680" ResizeMode="CanResize" SizeToContent="Manual" KeyDown="Window_KeyDown">
+        Title="MainWindow"   ContentRendered="Window_ContentRendered" WindowStartupLocation="CenterScreen" WindowState="Maximized" MinWidth="1280" MinHeight="680" ResizeMode="CanResize" SizeToContent="Manual" KeyDown="Window_KeyDown">
     <Window.Background>
         <ImageBrush ImageSource="resources/background.jpg"/>
     </Window.Background>
@@ -33,27 +33,41 @@
                     </Grid>
                 </Border>
                 <Image Source="resources/88395447.jpg" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,60,0,0" Width="250" />
-
+                
+                
 
             </Grid>
             
             <Grid Grid.Column="2">
                 <Border Margin="50,100,50,0" BorderThickness="1,1,1,1" CornerRadius="25,25,25,25" Background="White" VerticalAlignment="Top" Height="205">
-                    <Label Content="00"  Background="Black" BorderBrush="White" BorderThickness="5,5,5,5" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="150" Margin="0,20,0,0"/>
+                    <Label x:Name="label_Score" Content="000"  Background="Black" BorderBrush="White" BorderThickness="5,5,5,5" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="150" Margin="0,20,0,0"/>
                 </Border>
                 <Image Source="resources/score.png" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,50,0,0" Width="250" />
 
-                <Border x:Name="button_play" Cursor="Hand" VerticalAlignment="Bottom" Margin="100,0,100,25" Height="205" CornerRadius="15,15,15,15" >
+                <Border Margin="0,375,0,0" MaxWidth="250" MinWidth="250" BorderThickness="1,1,1,1" CornerRadius="25,25,25,25" Background="White" VerticalAlignment="Top" Height="125">
+                    <Label x:Name="label_HighScore" Content="000"  Background="Black" BorderBrush="White" BorderThickness="5,5,5,5" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="75" Margin="0,20,0,0"/>
+                </Border>
+                <Image Source="resources/highScore.png" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,215,0,0" Width="300" />
+
+                <Border x:Name="button_play" Cursor="Hand" VerticalAlignment="Bottom" Margin="100,0,100,0" Height="205" CornerRadius="15,15,15,15" >
                     <Grid>
-                        <Image x:Name="buttonPlay_img" Visibility="Visible" Source="resources/button_play.png"   />
-                        <Image x:Name="buttonPlay_img_mouseover" Visibility="Hidden" Source="resources/button_play_mouseOver.png" MouseDown="ButtonStart_MouseDown"   />
+                        <Image Cursor="Hand" x:Name="buttonPlay_img" Visibility="Visible" Source="resources/button_play.png"  MouseDown="ButtonStart_MouseDown"  />
+                        <Image Cursor="Hand" x:Name="buttonPlay_img_mouseover" Visibility="Hidden" Source="resources/button_play_mouseOver.png" MouseDown="ButtonStart_MouseDown"   />
+                    </Grid>
+                </Border>
+
+                <Border x:Name="button_pause" Cursor="Hand" Visibility="Hidden" VerticalAlignment="Bottom" Margin="100,0,100,0" Height="205" CornerRadius="15,15,15,15" >
+                    <Grid>
+                        <Image Cursor="Hand" x:Name="buttonPause_img" Visibility="Visible" Source="resources/button_pause.png" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="buttonPause_MouseDown"  />
+                        <Image Cursor="Hand" x:Name="buttonContinuer_img" Visibility="Hidden" Source="resources/button_continuer.png"  HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="buttonContinuer_MouseDown"  />
                     </Grid>
                 </Border>
 
             </Grid>
 
-            <Border x:Name="Border_GameBoard" VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,25,0,0" Grid.Column="1" BorderBrush="#FF560606" BorderThickness="0,0,0,0">
-                <Grid x:Name="GameBoard" >
+
+
+            <Grid Background="Transparent" MouseDown="Window_MouseDown" x:Name="GameBoard" VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,25,0,0" Grid.Column="1" MouseWheel="GameBoard_MouseWheel" >
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -92,8 +106,13 @@
                     <!-- Grid Contents -->
                 </Grid>
 
-            </Border>
-            
+            <Grid Visibility="Hidden" x:Name="Grid_Pause" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,25,0,48" Grid.Column="1" Background="#7F5D5B5B" >
+                <Image Width="150" Source="resources/pause_icon.png"/>
+            </Grid>
+
+            <Grid Visibility="Hidden" x:Name="Grid_GameOver" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,25,0,48" Grid.Column="1" Background="#7FFF0000" >
+                <Image Width="400" Source="/gameOver.png" Margin="50,0,50,0"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

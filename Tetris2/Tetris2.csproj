@@ -14,8 +14,13 @@
     <None Remove="88395447.jpg" />
     <None Remove="background.jpg" />
     <None Remove="bouton_play.png" />
+    <None Remove="button_continuer.png" />
+    <None Remove="button_pause.png" />
     <None Remove="button_play.png" />
     <None Remove="button_play_mouseOver.png" />
+    <None Remove="gameOver.png" />
+    <None Remove="highScore.png" />
+    <None Remove="pause_icon.png" />
     <None Remove="score.png" />
     <None Remove="Tetris_J.svg.png" />
     <None Remove="Tetris_L.svg %281%29.png" />
@@ -24,11 +29,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
     <Folder Include="Utilities\" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="gameOver.png" />
+    <Resource Include="resources\pause_icon.png" />
+    <Resource Include="resources\button_continuer.png" />
+    <Resource Include="resources\button_pause.png" />
+    <Resource Include="resources\highScore.png" />
     <Resource Include="resources\88395447.jpg" />
     <Resource Include="resources\2560px-Tetris_I.svg.png" />
     <Resource Include="resources\2560px-Tetris_S.svg.png" />
@@ -41,6 +50,21 @@
     <Resource Include="resources\Tetris_L.svg %281%29.png" />
     <Resource Include="resources\Tetris_O.svg %281%29.png" />
     <Resource Include="resources\Tetris_Z.svg.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

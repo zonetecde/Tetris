@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Timer = System.Timers.Timer;
 
 namespace Tetris2
 {
@@ -24,10 +26,12 @@ namespace Tetris2
         private int ActualRotation = 0; // la rotation que la pièce à actuellement
         private int[] ActualRotationPos; // position du centre de rotation de la pièce actualle
         private List<int[]> ActualPiecePos; // toutes les coordonnées de la pièce actuelle
-       
+        private List<int[]> ActualPredictionPos = new List<int[]>(); // toutes les coordonnées de la prediction
+
         private bool isGameOver = false;
 
         private Timer gameTimer;
+        private int Score = 0;
 
         private Brush COLOR_PIECE_I = Brushes.LightBlue;
         private Brush COLOR_PIECE_O = Brushes.Yellow;
@@ -62,7 +66,8 @@ namespace Tetris2
                 {
                     Border r = new Border();
                     r.BorderBrush = Brushes.AliceBlue;
-                    r.DataContext = cellSize;
+                    r.MouseEnter += new MouseEventHandler(ColumnMouseOver);
+                    r.DataContext = y;
                     r.BorderThickness = new Thickness(0.2, 0.2, 0.2, 0.2);
                     GameBoard.Children.Add(r);
                     Grid.SetColumn(r, y);
@@ -81,37 +86,42 @@ namespace Tetris2
             }
         }
 
+        private void ColumnMouseOver(object sender, MouseEventArgs e)
+        {
+            if (!isGameOver && ActualRotationPos != null)
+            {
+                // bouge left et right
+                int columnToGo = Convert.ToInt32((sender as Border).DataContext);
+                int actualColumn = ActualRotationPos[1];
+                if (ActualPiece == Pièce.I)
+                    actualColumn += 2;
+                int difference = columnToGo - actualColumn;
+                // 9 - 5 = +4 move right
+                if(difference > 0)
+                {
+                    MovePieceLeftOrRight(false, difference);
+                }
+                else if(difference < 0)
+                {
+                    MovePieceLeftOrRight(true, (difference * -1));
+                }
+            }
+        }
+
         private void StartGame()
         {
             isGameOver = false;
+            ActualPredictionPos = new List<int[]>();
+            ActualPiecePos = new List<int[]>();
 
             // ui
-            Border_GameBoard.BorderThickness = new Thickness(0, 0, 0, 0);
+            Grid_GameOver.Visibility = Visibility.Hidden;
             GameBoard.Children.Clear();
             AddGameBoard();
 
             // Génération de la liste des pièces qui vont arrivé dans l'ordre
             pièces.Clear();
             pièces = AddRandomPieces();
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
-            pièces.Insert(0, Pièce.I);
 
             // timer init
             gameTimer = new Timer(1000);
@@ -222,11 +232,13 @@ namespace Tetris2
 
         private void MovePieceDownOneBlock(object? sender, ElapsedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            
+
+            this.Dispatcher.Invoke(async () =>
             {
                 try
                 {
-                    foreach(var piecePartPos in ActualPiecePos)
+                    foreach (var piecePartPos in ActualPiecePos)
                     {
                         if ((string)gameBoard[piecePartPos[0] + 1, piecePartPos[1]].Tag == "STILL") // Si la descente tappera dans un autre truc
                         {
@@ -238,14 +250,14 @@ namespace Tetris2
                     Brush pcColor = gameBoard[ActualPiecePos[0][0], ActualPiecePos[0][1]].Background;
 
                     foreach (var piecePartPos in ActualPiecePos)
-                    { 
+                    {
                         // remove l'ancienne piece                      
                         gameBoard[piecePartPos[0], piecePartPos[1]].Tag = string.Empty;
                         gameBoard[piecePartPos[0], piecePartPos[1]].Background = null;
                     }
 
                     foreach (var piecePartPos in ActualPiecePos)
-                     // put new piece avec une distance de + 1
+                    // put new piece avec une distance de + 1
                     {
                         gameBoard[piecePartPos[0] + 1, piecePartPos[1]].Tag = "MOVING";
                         gameBoard[piecePartPos[0] + 1, piecePartPos[1]].Background = pcColor;
@@ -261,84 +273,107 @@ namespace Tetris2
                 }
                 catch
                 {
+
                     // = atteind le fond, on les met donc en still
 
                     foreach (var piecePartPos in ActualPiecePos)
                     {
-                        
                         gameBoard[piecePartPos[0], piecePartPos[1]].Tag = "STILL";
                     }
 
-                    // check for line completation
-                    List<int> completedLine = new List<int>();
-
-                    for (int x = 0; x < 20; x++)
-                    {
-                        bool isLineComplet = true;
-                        for (int y = 0; y < 10; y++)
-                        {
-                            if((string)gameBoard[x,y].Tag != "STILL")
-                            {
-                                // ligne pas complete donc teste la suivante
-                                isLineComplet = false;
-                                break;
-                            }
-                        }
-
-                        if (isLineComplet)
-                        {
-                            GameBoard.Children.Clear();
-
-                            // ex : line 8 complet
-                            for (int line = x - 1; line >= 0; line--) // 7, 6, 5, 4, 3, 2, 1, 0
-                            {
-                                // 7 have to become 8
-                                for (int y = 0; y < 10; y++)
-                                {
-                                    // 8             now equal to = 7
-                                    gameBoard[line + 1, y] = gameBoard[line, y];
-                                }
-
-                                
-                            }
-
-                            // 0 now equal to 1
-                            // 0 is now empty.
-                            for (int x2 = 0; x2 < 20; x2++)
-                            {
-                                for (int y = 0; y < 10; y++)
-                                {                                   
-                                    if (x2 == 0) // première ligne
-                                    {
-                                        Border r = new Border();
-                                        r.BorderBrush = Brushes.AliceBlue;
-                                        r.DataContext = cellSize;
-                                        r.BorderThickness = new Thickness(0.2, 0.2, 0.2, 0.2);
-                                        GameBoard.Children.Add(r);
-                                        Grid.SetColumn(r, y);
-                                        Grid.SetRow(r, x2);
-                                        gameBoard[x2, y] = r;
-                                        r.Width = cellSize;
-                                    }
-                                    else // première line toujours void
-                                    {
-                                        GameBoard.Children.Add(gameBoard[x2, y]);
-                                        Grid.SetColumn(gameBoard[x2, y], y);
-                                        Grid.SetRow(gameBoard[x2, y], x2);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    CheckForLineCompletation();
 
                     //lance une nouvelle pièce
                     AfficherProchainePiece();
                 }
             });
-
+            
         }
 
-        private void MovePieceLeftOrRight(bool isLeft)
+        private void CheckForLineCompletation()
+        {
+
+            // check for line completation
+            List<int> completedLine = new List<int>();
+
+            for (int x = 0; x < 20; x++)
+            {
+                bool isLineComplet = true;
+                for (int y = 0; y < 10; y++)
+                {
+                    if ((string)gameBoard[x, y].Tag != "STILL")
+                    {
+                        // ligne pas complete donc teste la suivante
+                        isLineComplet = false;
+                        break;
+                    }
+                }
+
+                if (isLineComplet)
+                {
+                    GameBoard.Children.Clear();
+
+                    // ex : line 8 complet
+                    for (int line = x - 1; line >= 0; line--) // 7, 6, 5, 4, 3, 2, 1, 0
+                    {
+                        // 7 have to become 8
+                        for (int y = 0; y < 10; y++)
+                        {
+                            // 8             now equal to = 7
+                            gameBoard[line + 1, y] = gameBoard[line, y];
+                        }
+
+
+                    }
+
+                    // 0 now equal to 1
+                    // 0 is now empty.
+                    for (int x2 = 0; x2 < 20; x2++)
+                    {
+                        for (int y = 0; y < 10; y++)
+                        {
+                            if (x2 == 0) // première ligne
+                            {
+                                Border r = new Border();
+                                r.BorderBrush = Brushes.AliceBlue;
+                                r.MouseEnter += new MouseEventHandler(ColumnMouseOver);
+                                r.DataContext = y;
+                                r.BorderThickness = new Thickness(0.2, 0.2, 0.2, 0.2);
+                                GameBoard.Children.Add(r);
+                                Grid.SetColumn(r, y);
+                                Grid.SetRow(r, x2);
+                                gameBoard[x2, y] = r;
+                                r.Width = cellSize;
+                            }
+                            else // première line toujours void
+                            {
+                                GameBoard.Children.Add(gameBoard[x2, y]);
+                                Grid.SetColumn(gameBoard[x2, y], y);
+                                Grid.SetRow(gameBoard[x2, y], x2);
+                            }
+                        }
+                    }
+
+                    Score++;
+                    label_Score.Content = Score.ToString().PadLeft(3, '0');
+
+                    if (Score >= 5)
+                        gameTimer.Interval = 900;
+                    if (Score >= 10)
+                        gameTimer.Interval = 800;
+                    if (Score >= 20)
+                        gameTimer.Interval = 650;
+                    if (Score >= 30)
+                        gameTimer.Interval = 450;
+                    if (Score >= 40)
+                        gameTimer.Interval = 300;
+                    if (Score >= 50)
+                        gameTimer.Interval = 150;
+                }
+            }
+        }
+
+        private void MovePieceLeftOrRight(bool isLeft, int deCombien)
         {
             try
             {
@@ -347,13 +382,13 @@ namespace Tetris2
                 {
                     if (isLeft)
                     {
-                        if ((string)gameBoard[piecePartPos[0], piecePartPos[1] - 1].Tag == "STILL") // Si la descente tappera dans un autre truc
+                        if ((string)gameBoard[piecePartPos[0], piecePartPos[1] - deCombien].Tag == "STILL") // Si la descente tappera dans un autre truc
                         {
                             throw new NotImplementedException();
                         }
                     }
                     else
-                        if ((string)gameBoard[piecePartPos[0], piecePartPos[1] + 1].Tag == "STILL") // Si la descente tappera dans un autre truc
+                        if ((string)gameBoard[piecePartPos[0], piecePartPos[1] + deCombien].Tag == "STILL") // Si la descente tappera dans un autre truc
                     {
                         throw new NotImplementedException();
                     }
@@ -373,32 +408,31 @@ namespace Tetris2
                 {
                     if (isLeft)
                     {
-                        gameBoard[piecePartPos[0], piecePartPos[1] - 1].Tag = "MOVING";
-                        gameBoard[piecePartPos[0], piecePartPos[1] - 1].Background = pcColor;
+                        gameBoard[piecePartPos[0], piecePartPos[1] - deCombien].Tag = "MOVING";
+                        gameBoard[piecePartPos[0], piecePartPos[1] - deCombien].Background = pcColor;
                     }
                     else
                     {
-                        gameBoard[piecePartPos[0], piecePartPos[1] + 1].Tag = "MOVING";
-                        gameBoard[piecePartPos[0], piecePartPos[1] + 1].Background = pcColor;
+                        gameBoard[piecePartPos[0], piecePartPos[1] + deCombien].Tag = "MOVING";
+                        gameBoard[piecePartPos[0], piecePartPos[1] + deCombien].Background = pcColor;
                     }
                 }
 
                 for (int i = 0; i < ActualPiecePos.Count; i++) // set new coo 
                 {
                     if (isLeft)
-                        ActualPiecePos[i][1] = ActualPiecePos[i][1] - 1;
+                        ActualPiecePos[i][1] = ActualPiecePos[i][1] - deCombien;
                     else
-                        ActualPiecePos[i][1] = ActualPiecePos[i][1] + 1;
+                        ActualPiecePos[i][1] = ActualPiecePos[i][1] + deCombien;
 
                 }
                 // et ne pas oublier rotation coo qui descend aussi
                 if (isLeft)
-
-                    ActualRotationPos[1] = ActualRotationPos[1] - 1;
+                    ActualRotationPos[1] = ActualRotationPos[1] - deCombien;
                 else
-                    ActualRotationPos[1] = ActualRotationPos[1] + 1;
+                    ActualRotationPos[1] = ActualRotationPos[1] + deCombien;
 
-
+                PiecePrediction();
             }
             catch
             {
@@ -426,14 +460,100 @@ namespace Tetris2
             ActualPiecePos = positions;
 
             ActualPiece = piece;
+
+            PiecePrediction();
         }
+
+        private void PiecePrediction()
+        {
+            // affiche la piece au plus bas 
+            foreach(var pos in ActualPredictionPos)
+            {
+                if((string)gameBoard[pos[0], pos[1]].Tag != "STILL" && (string)gameBoard[pos[0], pos[1]].Tag != "MOVING"
+                     && (string)gameBoard[pos[0], pos[1]].Tag != "ROTATION")
+                {
+                    gameBoard[pos[0], pos[1]].Opacity = 100;
+                    gameBoard[pos[0], pos[1]].Tag = null;
+                    gameBoard[pos[0], pos[1]].Background = null;
+                }
+
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                try
+                {
+                    foreach (var pos in ActualPiecePos)
+                    {
+                        if ((string)gameBoard[pos[0] + i, pos[1]].Tag == "STILL")
+                            throw new NotImplementedException();
+                    }
+                }
+                catch
+                {
+                    // pos[0] - (i +1) pour tous
+
+                    Color c = Brushes.Transparent.Color;
+                    try
+                    {
+                        c = ((SolidColorBrush)gameBoard[ActualPiecePos[0][0], ActualPiecePos[0][1]].Background).Color;
+                        c.A = 50;
+                    }
+                    catch { }
+
+                    foreach (var pos in ActualPiecePos)
+                    {
+                        try
+                        {
+                            if ((string)gameBoard[pos[0] + (i - 1), pos[1]].Tag != "MOVING" && (string)gameBoard[pos[0] + (i - 1), pos[1]].Tag != "STILL"
+                                 && (string)gameBoard[pos[0], pos[1]].Tag != "ROTATION")
+                            {
+                                gameBoard[pos[0] + (i - 1), pos[1]].Background = new SolidColorBrush(c);
+                                ActualPredictionPos.Add(new int[2] { pos[0] + (i - 1), pos[1] });
+                            }
+                        }
+                        catch
+                        {
+                            // game over surement vu que 0 - 1 = -1
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
 
         private void GameOver()
         {
             isGameOver = true;
 
+            button_play.Visibility = Visibility.Visible;
+            button_pause.Visibility = Visibility.Hidden;
+
             gameTimer.Stop();
-            Border_GameBoard.BorderThickness = new Thickness(5, 5, 5, 0);
+
+            for (int x = 0; x < 20; x++)
+            {
+                for (int y = 0; y < 10; y++)
+                {
+                    if ((string)gameBoard[x, y].Tag != "STILL")
+                    {
+                        gameBoard[x, y].Background = null;
+                    }
+                }
+               
+            }
+
+            Grid_GameOver.Visibility = Visibility.Visible;
+
+            if (Score > Tetris2.Properties.Settings.Default.highScore)
+            {
+                Tetris2.Properties.Settings.Default.highScore = Score;
+                Tetris2.Properties.Settings.Default.Save();
+
+                label_HighScore.Content = Tetris2.Properties.Settings.Default.highScore.ToString().PadLeft(3, '0');
+            }
         }
 
         private List<Pièce> AddRandomPieces()
@@ -453,6 +573,8 @@ namespace Tetris2
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             AddGameBoard();
+
+            label_HighScore.Content = Tetris2.Properties.Settings.Default.highScore.ToString().PadLeft(3, '0');
 
             this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged); // Pour pas trigger l'event au démarrage et que ça fasse une ereur gameBoard = null
         }
@@ -475,13 +597,16 @@ namespace Tetris2
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                button_play.Visibility = Visibility.Hidden;
+                button_pause.Visibility = Visibility.Visible;
+
                 StartGame();
             }
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!isGameOver)
+            if (!isGameOver && ActualPiecePos != null)
             {
                 if (e.Key == Key.Space)
                 {
@@ -492,27 +617,77 @@ namespace Tetris2
                 }
                 else if (e.Key == Key.Left)
                 {
-                    MovePieceLeftOrRight(true);
+                    MovePieceLeftOrRight(true, 1);
                 }
                 else if (e.Key == Key.Right)
                 {
-                    MovePieceLeftOrRight(false);
+                    MovePieceLeftOrRight(false, 1);
                 }
                 else if (e.Key == Key.Down)
                 {
                     MovePieceDownOneBlock(this, null);
                 }
+                else if(e.Key == Key.Up)
+                {
+                    InstantDown();
+                }
             }
+        }
+
+        private void InstantDown()
+        {
+            // instant down
+
+
+            for (int i = 0; i < 20; i++)
+            {
+                try
+                {
+                    foreach (var pos in ActualPiecePos)
+                    {
+                        if ((string)gameBoard[pos[0] + i, pos[1]].Tag == "STILL") // pos basse le plus proche
+                            throw new NotImplementedException();
+                    }
+                }
+                catch
+                {
+                    // pos[0] - (i +1) pour tous
+
+                    Brush color = gameBoard[ActualPiecePos[0][0], ActualPiecePos[0][1]].Background;
+
+                    foreach (var pos in ActualPiecePos)
+                    {
+                        gameBoard[pos[0] + (i - 1), pos[1]].Background = color;
+                        gameBoard[pos[0] + (i - 1), pos[1]].Tag = "STILL";                      
+                    }
+                    
+
+                    break;
+                }
+            }
+
+            foreach (var pos in ActualPiecePos)
+            {
+                if ((string)gameBoard[pos[0], pos[1]].Tag != "STILL")
+                {
+                    gameBoard[pos[0], pos[1]].Opacity = 100;
+                    gameBoard[pos[0], pos[1]].Background = null;
+                }
+            }
+
+            CheckForLineCompletation();
+
+            AfficherProchainePiece();
         }
 
         private void RotatePiece()
         {
             // Rotate actual pieces
-            ActualPiecePos.ForEach(x =>
+            foreach (var postion in ActualPiecePos)
             {
-                gameBoard[x[0], x[1]].Background = null;
-                gameBoard[x[0], x[1]].Tag = string.Empty;
-            });
+                gameBoard[postion[0], postion[1]].Background = null;
+                gameBoard[postion[0], postion[1]].Tag = string.Empty;
+            }
 
             switch (ActualRotation) // ROTATION ALGHO
             {
@@ -821,31 +996,34 @@ namespace Tetris2
         {
             try
             {
-                posOfNewRotation.ForEach(piecePos =>
+                foreach (var piecePos in posOfNewRotation)
                 {
                     if ((string)gameBoard[piecePos[0], piecePos[1]].Tag == "STILL") // Si la rotation tappera dans le truc
                     {
-                        new Exception();
+                        throw new NotImplementedException();
                     }
-                });
+                }
 
                 // La rotation est possible car pas d'erreur 
-                posOfNewRotation.ForEach(piecePos =>
+                foreach (var piecePos in posOfNewRotation)
                 {
                     ColorAndTagAt(piecePos[0], piecePos[1], "MOVING", color);
-
-                });
+                }
                 // on peut donc aussi mettre les nouvelles pos
                 ActualPiecePos = posOfNewRotation;
+                PiecePrediction();
             }
             catch
             {
                 // piece ne peut rotate = remet les couleurs anciennes
-                ActualPiecePos.ForEach(x => // remet les couleurs car impossible à rotate
+                foreach (var position in ActualPiecePos)
                 {
-                    gameBoard[x[0], x[1]].Background = color;
-                    gameBoard[x[0], x[1]].Tag = "MOVING";
-                });
+                    // remet les couleurs car impossible à rotate
+
+                    gameBoard[position[0], position[1]].Background = color;
+                    gameBoard[position[0], position[1]].Tag = "MOVING";
+
+                }
             }
         }
 
@@ -854,6 +1032,60 @@ namespace Tetris2
             gameBoard[x, y].Background = COLOR_PIECE_I;
             gameBoard[x, y].Background = color;
             gameBoard[x, y].Tag = tag;
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!isGameOver && ActualPiecePos != null)
+            {
+                if (e.LeftButton == MouseButtonState.Pressed) // Roatate avec clique gauche
+                {
+                    InstantDown();
+
+                }
+                if (e.RightButton == MouseButtonState.Pressed) // Roatate avec clique gauche
+                {
+                    ActualRotation++;
+                    if (ActualRotation > 3)
+                        ActualRotation = 0;
+                    RotatePiece();
+                }
+            }
+
+        }
+
+        private void buttonPause_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                gameTimer.Stop();
+                isGameOver = true; // pour empecher de bouger
+                buttonContinuer_img.Visibility = Visibility.Visible;
+                buttonPause_img.Visibility = Visibility.Hidden;
+                Grid_Pause.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void buttonContinuer_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Grid_Pause.Visibility = Visibility.Hidden;
+
+                gameTimer.Start();
+                isGameOver = false;
+                buttonContinuer_img.Visibility = Visibility.Hidden;
+                buttonPause_img.Visibility = Visibility.Visible;
+
+            }
+        }
+
+        private void GameBoard_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if(!isGameOver && ActualPiecePos != null)
+            {
+                MovePieceDownOneBlock(this, null);
+            }
         }
     }
 
