@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tetris2", "Tetris2\Tetris2.csproj", "{BD6B3768-B267-4F41-B5E1-69171E468FA0}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{CF9799AC-4E36-46F6-9C1C-AEA8545194F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{BD6B3768-B267-4F41-B5E1-69171E468FA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD6B3768-B267-4F41-B5E1-69171E468FA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD6B3768-B267-4F41-B5E1-69171E468FA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF9799AC-4E36-46F6-9C1C-AEA8545194F3}.Debug|Any CPU.ActiveCfg = Debug
+		{CF9799AC-4E36-46F6-9C1C-AEA8545194F3}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

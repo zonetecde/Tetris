@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Tetris2"
         mc:Ignorable="d"
         
-        Title="MainWindow"   ContentRendered="Window_ContentRendered" WindowStartupLocation="CenterScreen" WindowState="Maximized" MinWidth="1280" MinHeight="680" ResizeMode="CanResize" SizeToContent="Manual" KeyDown="Window_KeyDown">
+        Title="Tetris"   ContentRendered="Window_ContentRendered" WindowStartupLocation="CenterScreen" WindowState="Maximized" MinWidth="1280" MinHeight="680" ResizeMode="CanResize" SizeToContent="Manual" KeyDown="Window_KeyDown" Icon="/icon.ico">
     <Window.Background>
         <ImageBrush ImageSource="resources/background.jpg"/>
     </Window.Background>

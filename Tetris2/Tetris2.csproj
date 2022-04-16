@@ -5,6 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <PackageIcon></PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +21,7 @@
     <None Remove="button_play_mouseOver.png" />
     <None Remove="gameOver.png" />
     <None Remove="highScore.png" />
+    <None Remove="icon.ico" />
     <None Remove="pause_icon.png" />
     <None Remove="score.png" />
     <None Remove="Tetris_J.svg.png" />
@@ -33,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="icon.ico" />
     <Resource Include="gameOver.png" />
     <Resource Include="resources\pause_icon.png" />
     <Resource Include="resources\button_continuer.png" />
