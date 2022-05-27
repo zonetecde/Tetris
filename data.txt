@@ -11,5 +11,18 @@
       }
     ],
     "adresse": null
+  },
+  {
+    "personnes": [
+      {
+        "Age": 55,
+        "nom": "Monsieur A"
+      },
+      {
+        "Age": 72,
+        "nom": "Monsieur B"
+      }
+    ],
+    "adresse": null
   }
 ]
