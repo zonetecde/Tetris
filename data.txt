@@ -1,1 +1,15 @@
-coucou ceci est le nouveau formulaire que tu vas pouvoir exploiter
+[
+  {
+    "personnes": [
+      {
+        "Age": 15,
+        "nom": "Staszewski"
+      },
+      {
+        "Age": 12,
+        "nom": "Michel"
+      }
+    ],
+    "adresse": null
+  }
+]
